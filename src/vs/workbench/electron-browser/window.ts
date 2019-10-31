@@ -21,7 +21,7 @@ import * as browser from 'vs/base/browser/browser';
 import { ICommandService, CommandsRegistry } from 'vs/platform/commands/common/commands';
 import { IResourceInput } from 'vs/platform/editor/common/editor';
 import { KeyboardMapperFactory } from 'vs/workbench/services/keybinding/electron-browser/nativeKeymapService';
-import { ipcRenderer as ipc, webFrame, crashReporter, Event } from 'electron';
+import { ipcRenderer as ipc, webFrame, crashReporter, Event, CrashReporterStartOptions } from 'electron';
 import { IWorkspaceEditingService } from 'vs/workbench/services/workspaces/common/workspaceEditing';
 import { IMenuService, MenuId, IMenu, MenuItemAction, ICommandAction, SubmenuItemAction, MenuRegistry } from 'vs/platform/actions/common/actions';
 import { IContextKeyService } from 'vs/platform/contextkey/common/contextkey';
@@ -192,7 +192,7 @@ export class ElectronWindow extends Disposable {
 		// High Contrast Events
 		ipc.on('vscode:enterHighContrast', async () => {
 			const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
-			if (windowConfig?.autoDetectHighContrast) {
+			if (windowConfig ?.autoDetectHighContrast) {
 				await this.lifecycleService.when(LifecyclePhase.Ready);
 				this.themeService.setColorTheme(VS_HC_THEME, undefined);
 			}
@@ -200,7 +200,7 @@ export class ElectronWindow extends Disposable {
 
 		ipc.on('vscode:leaveHighContrast', async () => {
 			const windowConfig = this.configurationService.getValue<IWindowSettings>('window');
-			if (windowConfig?.autoDetectHighContrast) {
+			if (windowConfig ?.autoDetectHighContrast) {
 				await this.lifecycleService.when(LifecyclePhase.Ready);
 				this.themeService.restoreColorTheme();
 			}
@@ -423,7 +423,7 @@ export class ElectronWindow extends Disposable {
 
 		this.openerService.registerExternalUriResolver({
 			resolveExternalUri: async (uri: URI, options?: OpenOptions) => {
-				if (options?.allowTunneling) {
+				if (options ?.allowTunneling) {
 					const portMappingRequest = extractLocalHostUriMetaDataForPortMapping(uri);
 					if (portMappingRequest) {
 						const tunnel = await this.tunnelService.openTunnel(portMappingRequest.port);
@@ -443,7 +443,7 @@ export class ElectronWindow extends Disposable {
 	private shouldOpenExternal(resource: URI, options?: OpenOptions) {
 		const scheme = resource.scheme.toLowerCase();
 		const preferOpenExternal = (scheme === Schemas.mailto || scheme === Schemas.http || scheme === Schemas.https);
-		return options?.openExternal || preferOpenExternal;
+		return options ?.openExternal || preferOpenExternal;
 	}
 
 	private updateTouchbarMenu(): void {
@@ -518,13 +518,13 @@ export class ElectronWindow extends Disposable {
 		}
 
 		// base options with product info
-		const options = {
+		const options: CrashReporterStartOptions = {
 			companyName,
 			productName,
 			submitURL: isWindows ? hockeyAppConfig[process.arch === 'ia32' ? 'win32-ia32' : 'win32-x64'] : isLinux ? hockeyAppConfig[`linux-x64`] : hockeyAppConfig.darwin,
 			extra: {
 				vscode_version: product.version,
-				vscode_commit: product.commit
+				vscode_commit: product.commit || ''
 			}
 		};
 
