@@ -1,4 +1,4 @@
-# Visual Studio Code - Open Source ("Code - OSS")
+# Visual Studio Code- Niels Edition - Open Source ("Code - OSS")
 
 <!-- [![Build Status](https://dev.azure.com/vscode/VSCode/_apis/build/status/VS%20Code?branchName=master)](https://aka.ms/vscode-builds) -->
 [![Build Status](https://dev.azure.com/vscode/VSCode/_apis/build/status/VS%20Code?branchName=master)](https://dev.azure.com/vscode/VSCode/_build/latest?definitionId=12)
